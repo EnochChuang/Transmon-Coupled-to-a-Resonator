@@ -129,6 +129,16 @@ For the parameters above, the program obtains approximately
 | $f_{12}$ | $5.338$ GHz |
 | $\alpha$ | $-0.345$ GHz |
 
+The corresponding console output is
+
+```text
+=== Part 1A: Bare Transmon Parameters ===
+f01 = 5.683 GHz
+f12 = 5.338 GHz
+alpha = -0.345 GHz
+Delta_qr = 0.000 GHz
+```
+
 The resonator frequency is initially set equal to the calculated Transmon frequency,
 
 $f_r=f_{01},$
@@ -874,9 +884,17 @@ For the parameters used in the program, the result is approximately
 
 | Quantity | Numerical result |
 |---|---:|
-| Bare Transmon frequency at the minimum gap | $5.6806$ GHz |
+| Bare Transmon frequency at the minimum gap | $5.682576$ GHz |
 | Resonator frequency | $5.683$ GHz |
-| Minimum dressed-state gap | $108.8$ MHz |
+| Minimum dressed-state gap | $108.784748$ MHz |
+
+The corresponding console output is
+
+```text
+=== Part 1C: Transmon–Resonator Avoided Crossing ===
+f01 at minimum gap = 5.682576 GHz
+Minimum gap = 108.784748 MHz
+```
 
 The small difference between the bare Transmon frequency and the resonator frequency at the numerical minimum is caused by the finite parameter grid and by energy shifts from the full interaction.
 
