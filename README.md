@@ -139,7 +139,7 @@ so the uncoupled Transmon and resonator begin at resonance.
 
 ## Part 1B: Duffing Transmon–Resonator Model
 
-We can do a Taylor expansion of $\cos \hat{\phi}$ on H_{\mathrm{T}}$ to simplify the Hamiltonian, we then have
+We can do a Taylor expansion of $\cos \hat{\phi}$ on $H_{\mathrm{T}}$ to simplify the Hamiltonian, we then have
 
 $$ H_{\mathrm{T}} \approx 4E_C\hat{n}^{2} + \frac{E_J}{2}\hat{\phi}^{2} - \frac{E_J}{24}\hat{\phi}^{4},$$
 
