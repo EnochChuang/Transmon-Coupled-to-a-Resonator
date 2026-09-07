@@ -1,4 +1,4 @@
-# Transmon-and-Fluxonium-Coupled-to-a-Resonator
+# Transmon-Fluxonium-Coupled-to-a-Resonator
 
 This project aims to investigate :
 
