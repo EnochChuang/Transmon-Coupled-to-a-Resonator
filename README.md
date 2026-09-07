@@ -2,7 +2,7 @@
 
 This project aims to investigate :
 
-- How can we observe "avoided crossing" in spectrums of transmon and fluxonium qubits when a qubit is coupled with a resonator
+- How can we observe "avoided crossing" in spectrums of transmon qubits when a qubit is coupled with a resonator
 - How excitation changes between the resonator and the qubit when a qubit is coupled with a resonator
 
 ---
