@@ -129,16 +129,6 @@ For the parameters above, the program obtains approximately
 | $f_{12}$ | $5.338$ GHz |
 | $\alpha$ | $-0.345$ GHz |
 
-The corresponding console output is
-
-```text
-=== Part 1A: Bare Transmon Parameters ===
-f01 = 5.683 GHz
-f12 = 5.338 GHz
-alpha = -0.345 GHz
-Delta_qr = 0.000 GHz
-```
-
 The resonator frequency is initially set equal to the calculated Transmon frequency,
 
 $f_r=f_{01},$
@@ -541,6 +531,48 @@ $E_j^{\mathrm{relative}}=E_j-E_0.$
 
 Only the first and second excited dressed levels are plotted. Far from resonance, these levels resemble the uncoupled Transmon and resonator states. Near $f_q=f_r$, the coupling mixes the two states and produces an avoided crossing.
 
+### Expected result from the QuTiP calculation
+
+For the parameters used in Part 1B, the fixed resonator frequency is inherited from Part 1A:
+
+$f_r=f_{01}=5.682576\ \mathrm{GHz}.$
+
+The coupling coefficient is
+
+$g=0.05\ \mathrm{GHz},$
+
+so the analytical minimum splitting at exact resonance is
+
+$2g=0.100\ \mathrm{GHz}=100.000\ \mathrm{MHz}.$
+
+The frequency sweep contains 200 evenly spaced points. Because this is an even number, the scan does not include the exact central point $f_q=f_r$. The two closest sampled Transmon frequencies are
+
+$f_q=5.680063\ \mathrm{GHz}$
+
+and
+
+$f_q=5.685088\ \mathrm{GHz}.$
+
+They have equal detuning magnitude,
+
+$|\Delta|=|f_q-f_r|=0.002513\ \mathrm{GHz},$
+
+and therefore give the smallest sampled separation
+
+$E_+-E_-=\sqrt{\Delta^2+4g^2}=0.100032\ \mathrm{GHz}=100.032\ \mathrm{MHz}.$
+
+The expected numerical results are therefore:
+
+| Quantity | Expected result |
+|---|---:|
+| Fixed resonator frequency $f_r$ | $5.682576$ GHz |
+| Analytical resonance position | $f_q=f_r=5.682576$ GHz |
+| Analytical minimum gap $2g$ | $100.000$ MHz |
+| Closest sampled $f_q$ values | $5.680063$ and $5.685088$ GHz |
+| Smallest gap on the 200-point grid | $100.032$ MHz |
+
+The generated figure should show two dressed energy branches approaching each other near $f_q=f_r$ without crossing. The lower branch is plotted in green and the upper branch in orange. Far from resonance, the branches approach the bare qubit and resonator energies; near resonance, they hybridize and are separated by approximately $100$ MHz.
+
 ### Analytical origin of the avoided crossing
 
 The avoided crossing plotted in Part 1B can be understood from the coupled Transmon–resonator Hamiltonian:
@@ -887,14 +919,6 @@ For the parameters used in the program, the result is approximately
 | Bare Transmon frequency at the minimum gap | $5.682576$ GHz |
 | Resonator frequency | $5.683$ GHz |
 | Minimum dressed-state gap | $108.784748$ MHz |
-
-The corresponding console output is
-
-```text
-=== Part 1C: Transmon–Resonator Avoided Crossing ===
-f01 at minimum gap = 5.682576 GHz
-Minimum gap = 108.784748 MHz
-```
 
 The small difference between the bare Transmon frequency and the resonator frequency at the numerical minimum is caused by the finite parameter grid and by energy shifts from the full interaction.
 
