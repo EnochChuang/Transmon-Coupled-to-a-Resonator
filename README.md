@@ -1,9 +1,11 @@
-# Transmon-Fluxonium-Coupled-to-a-Resonator
+# Transmon Coupled to a Resonator
 
-This project aims to investigate :
+This project investigates the energy spectrum of a Transmon qubit capacitively coupled to a microwave resonator. Its main goals are:
 
-- How can we observe "avoided crossing" in spectrums of transmon qubits when a qubit is coupled with a resonator
-- How excitation changes between the resonator and the qubit when a qubit is coupled with a resonator
+- to construct the bare Transmon Hamiltonian and calculate $f_{01}$, $f_{12}$, and the anharmonicity $\alpha$;
+- to model the coupled system using the Duffing approximation and the rotating-wave approximation;
+- to observe the avoided crossing produced when the Transmon frequency approaches the resonator frequency;
+- to compare the simplified Duffing model with a numerical `scqubits` model using the full Transmon Hamiltonian.
 
 ---
 
@@ -86,9 +88,56 @@ $$\alpha = f_{12}-f_{01}.$$
 
 So if $E_J$, $E_C$ and $n_g$ are given, we can know $H_{\mathrm{T}}$, so we can solve the eigenvalue problem and get $f_{01}$ (qubit frequency), $f_{12}$ and $\alpha$ of a transmon qubit.
 
+
+### Numerical implementation
+
+The charge basis is truncated to
+
+$n=-N_{\mathrm{cut}},\ldots,N_{\mathrm{cut}},$
+
+with $N_{\mathrm{cut}}=15$. Therefore, the numerical Hamiltonian has dimension
+
+$2N_{\mathrm{cut}}+1=31.$
+
+The parameters used in Part 1A are:
+
+| Parameter | Value |
+|---|---:|
+| $E_C$ | $0.3$ GHz |
+| $E_J/E_C$ | $50$ |
+| $E_J$ | $15$ GHz |
+| $n_g$ | $0$ |
+| $N_{\mathrm{cut}}$ | $15$ |
+
+The charging term is constructed as a diagonal NumPy matrix. The Josephson term is constructed by placing $-E_J/2$ directly above and below the main diagonal. The resulting matrix is converted into a QuTiP \`Qobj\` and numerically diagonalized.
+
+The program then calculates
+
+$f_{01}=E_1-E_0,$
+
+$f_{12}=E_2-E_1,$
+
+and
+
+$\alpha=f_{12}-f_{01}.$
+
+For the parameters above, the program obtains approximately
+
+| Quantity | Numerical result |
+|---|---:|
+| $f_{01}$ | $5.683$ GHz |
+| $f_{12}$ | $5.338$ GHz |
+| $\alpha$ | $-0.345$ GHz |
+
+The resonator frequency is initially set equal to the calculated Transmon frequency,
+
+$f_r=f_{01},$
+
+so the uncoupled Transmon and resonator begin at resonance.
+
 ---
 
-## Part 1B：Duffing Transmon–resonator model
+## Part 1B: Duffing Transmon–Resonator Model
 
 We can do a Taylor expansion of $\cos \hat{\phi}$ on H_{\mathrm{T}}$ to simplify the Hamiltonian, we then have
 
@@ -432,6 +481,56 @@ $$
 
 This is the Duffing version of the Jaynes–Cummings model.
 
+
+### Numerical implementation of the Duffing model
+
+The program represents the resonator and Transmon in a composite Hilbert space. The truncation dimensions are
+
+| Subsystem | Truncation |
+|---|---:|
+| Resonator | $N_r=10$ photon states |
+| Transmon | $N_q=3$ energy levels |
+
+The operators acting on the composite Hilbert space are
+
+$a=a_r\otimes I_q,$
+
+$b=I_r\otimes b_q.$
+
+Their number operators are
+
+$n_r=a^\dagger a,$
+
+$n_q=b^\dagger b.$
+
+The Hamiltonian implemented in the function \`coupled_H\` is
+
+$H_r=f_rn_r,$
+
+$H_q=f_qn_q+\frac{\alpha}{2}b^{\dagger2}b^2,$
+
+$H_{\mathrm{int}}=g(a^\dagger b+ab^\dagger),$
+
+and
+
+$H_{\mathrm{total}}=H_r+H_q+H_{\mathrm{int}}.$
+
+The coupling strength is set to
+
+$g=0.05\ \mathrm{GHz}.$
+
+To reveal the avoided crossing, the simplified Transmon frequency is swept directly over the interval
+
+$f_q\in[f_{01}-0.5,\ f_{01}+0.5]\ \mathrm{GHz},$
+
+using 200 points, while the resonator frequency $f_r$ remains fixed.
+
+At every value of $f_q$, the total Hamiltonian is diagonalized. The ground-state energy is subtracted from all eigenenergies:
+
+$E_j^{\mathrm{relative}}=E_j-E_0.$
+
+Only the first and second excited dressed levels are plotted. Far from resonance, these levels resemble the uncoupled Transmon and resonator states. Near $f_q=f_r$, the coupling mixes the two states and produces an avoided crossing.
+
 ---
 
 ## Part 1C: Transmon–Resonator Avoided Crossing
@@ -697,6 +796,99 @@ This is why the minimum gap obtained from the full `scqubits` model does
 not necessarily equal exactly $2g$, where $g$ is the coupling coefficient
 entered in the code.
 
+
+### Full numerical validation with scqubits
+
+The simplified Duffing calculation treats $f_q$, $\alpha$, and $g$ as effective parameters. Part 1C validates the avoided crossing using the full Transmon Hamiltonian provided by \`scqubits\`.
+
+The numerical subsystems are constructed as
+
+~~~python
+transmon = scq.Transmon(
+    EJ=EJ,
+    EC=EC,
+    ng=ng,
+    ncut=40,
+    truncated_dim=Nq
+)
+
+resonator = scq.Oscillator(
+    E_osc=wr,
+    truncated_dim=Nr
+)
+~~~
+
+The two subsystems are combined into one Hilbert space:
+
+~~~python
+hilbertspace = scq.HilbertSpace([transmon, resonator])
+~~~
+
+The program adds capacitive coupling through the Transmon charge operator and the resonator field quadrature:
+
+~~~python
+hilbertspace.add_interaction(
+    g=0.05,
+    op1=(transmon.n_operator(), transmon),
+    op2=(
+        resonator.creation_operator()
+        + resonator.annihilation_operator(),
+        resonator
+    ),
+    add_hc=False,
+    id_str="capacitive_coupling"
+)
+~~~
+
+Thus, the interaction used in this calculation is
+
+$H_{\mathrm{int}}=g\hat n(a+a^\dagger).$
+
+Unlike the simplified Duffing model, the effective coupling is determined by the charge matrix element
+
+$g_{\mathrm{eff}}=g\left|\langle0|\hat n|1\rangle\right|.$
+
+The Josephson energy is swept over
+
+$E_J\in[12,18]\ \mathrm{GHz}$
+
+using 300 points. At each value of $E_J$, the program performs the following steps:
+
+1. Update the Transmon Josephson energy.
+2. Diagonalize the bare Transmon Hamiltonian and calculate its $f_{01}$.
+3. Diagonalize the complete Transmon–resonator Hamiltonian.
+4. Subtract the dressed ground-state energy.
+5. Store the first two excited dressed energies.
+
+The gap between the two relevant dressed levels is calculated from
+
+$\mathrm{gap}(E_J)=E_2(E_J)-E_1(E_J).$
+
+The avoided-crossing point is identified numerically using
+
+~~~python
+gap_idx = np.argmin(gap_values)
+~~~
+
+For the parameters used in the program, the result is approximately
+
+| Quantity | Numerical result |
+|---|---:|
+| Bare Transmon frequency at the minimum gap | $5.6806$ GHz |
+| Resonator frequency | $5.683$ GHz |
+| Minimum dressed-state gap | $108.8$ MHz |
+
+The small difference between the bare Transmon frequency and the resonator frequency at the numerical minimum is caused by the finite parameter grid and by energy shifts from the full interaction.
+
+Part 1B and Part 1C therefore demonstrate the same physical phenomenon at two different levels of modeling:
+
+| Part | Model | Tuned parameter | Coupling |
+|---|---|---|---|
+| 1B | Duffing approximation | Effective frequency $f_q$ | $g(a^\dagger b+ab^\dagger)$ |
+| 1C | Full \`scqubits\` Transmon | Josephson energy $E_J$ | $g\hat n(a+a^\dagger)$ |
+
+The agreement between the two calculations confirms that the observed spectral splitting is produced by Transmon–resonator hybridization.
+
 ---
 
 ## Installation
@@ -704,13 +896,13 @@ entered in the code.
 Clone the repository:
 
 ```bash
-git clone https://github.com/EnochChuang/Transmon-Energy-Spectrum-Study.git
+git clone https://github.com/EnochChuang/Transmon-Coupled-to-a-Resonator.git
 ```
 
 Enter the project folder:
 
 ```bash
-cd Transmon-Energy-Spectrum-Study
+cd Transmon-Coupled-to-a-Resonator
 ```
 
 Install the required Python packages:
@@ -723,16 +915,17 @@ The main dependencies are:
 
 - NumPy
 - Matplotlib
+- QuTiP
 - scqubits
 
 ---
 
 ## Usage
 
-Run the simulation with
+After adding the simulation script to the repository, run it with
 
 ```bash
-python "1. Transmon Energy Spectrum.py"
+python "github 2(2).py"
 ```
 
-The program calculates the transmon spectrum and saves the six result figures in the `figures` folder.
+Parts 1A–1C print the bare Transmon parameters and the minimum avoided-crossing gap, and generate two avoided-crossing figures: one from the Duffing model and one from the full `scqubits` model.
