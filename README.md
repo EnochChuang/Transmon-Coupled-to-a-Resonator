@@ -573,7 +573,7 @@ The expected numerical results are therefore:
 
 ![Duffing-model Transmon–resonator avoided crossing](figures/part1b_duffing_avoided_crossing.svg)
 
-*Figure 1. Avoided crossing calculated with the QuTiP Duffing model. The dashed line marks the bare resonance condition $f_q=f_r$.*
+**Figure 1.** Avoided crossing calculated with the QuTiP Duffing model. The dashed line marks the bare resonance condition $f_q=f_r$.
 
 The generated figure should show two dressed energy branches approaching each other near $f_q=f_r$ without crossing. The lower branch is plotted in green and the upper branch in orange. Far from resonance, the branches approach the bare qubit and resonator energies; near resonance, they hybridize and are separated by approximately $100$ MHz.
 
@@ -926,7 +926,7 @@ For the parameters used in the program, the result is approximately
 
 ![Full scqubits Transmon–resonator avoided crossing](figures/part1c_scqubits_avoided_crossing.svg)
 
-*Figure 2. Avoided crossing calculated from the full Transmon–resonator model in scqubits. The dashed line marks the bare resonance condition $f_{01}=f_r$.*
+**Figure 2.** Avoided crossing calculated from the full Transmon–resonator model in scqubits. The dashed line marks the bare resonance condition $f_{01}=f_r$.
 
 The small difference between the bare Transmon frequency and the resonator frequency at the numerical minimum is caused by the finite parameter grid and by energy shifts from the full interaction.
 
