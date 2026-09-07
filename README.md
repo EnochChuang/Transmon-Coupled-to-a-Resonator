@@ -571,6 +571,10 @@ The expected numerical results are therefore:
 | Closest sampled $f_q$ values | $5.680063$ and $5.685088$ GHz |
 | Smallest gap on the 200-point grid | $100.032$ MHz |
 
+![Duffing-model Transmon–resonator avoided crossing](figures/part1b_duffing_avoided_crossing.svg)
+
+*Figure 1. Avoided crossing calculated with the QuTiP Duffing model. The dashed line marks the bare resonance condition $f_q=f_r$.*
+
 The generated figure should show two dressed energy branches approaching each other near $f_q=f_r$ without crossing. The lower branch is plotted in green and the upper branch in orange. Far from resonance, the branches approach the bare qubit and resonator energies; near resonance, they hybridize and are separated by approximately $100$ MHz.
 
 ### Analytical origin of the avoided crossing
@@ -920,6 +924,10 @@ For the parameters used in the program, the result is approximately
 | Resonator frequency | $5.683$ GHz |
 | Minimum dressed-state gap | $108.784748$ MHz |
 
+![Full scqubits Transmon–resonator avoided crossing](figures/part1c_scqubits_avoided_crossing.svg)
+
+*Figure 2. Avoided crossing calculated from the full Transmon–resonator model in scqubits. The dashed line marks the bare resonance condition $f_{01}=f_r$.*
+
 The small difference between the bare Transmon frequency and the resonator frequency at the numerical minimum is caused by the finite parameter grid and by energy shifts from the full interaction.
 
 Part 1B and Part 1C therefore demonstrate the same physical phenomenon at two different levels of modeling:
@@ -967,7 +975,7 @@ The main dependencies are:
 After adding the simulation script to the repository, run it with
 
 ```bash
-python "github 2(2).py"
+python "2. Transmon Coupled to a resonator.py"
 ```
 
 Parts 1A–1C print the bare Transmon parameters and the minimum avoided-crossing gap, and generate two avoided-crossing figures: one from the Duffing model and one from the full `scqubits` model.
