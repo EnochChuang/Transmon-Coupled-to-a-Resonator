@@ -531,11 +531,9 @@ $E_j^{\mathrm{relative}}=E_j-E_0.$
 
 Only the first and second excited dressed levels are plotted. Far from resonance, these levels resemble the uncoupled Transmon and resonator states. Near $f_q=f_r$, the coupling mixes the two states and produces an avoided crossing.
 
----
+### Analytical origin of the avoided crossing
 
-## Part 1C: Transmon–Resonator Avoided Crossing
-
-We now use the coupled Transmon–resonator Hamiltonian derived in Part 1B:
+The avoided crossing plotted in Part 1B can be understood from the coupled Transmon–resonator Hamiltonian:
 
 $$H=f_qb^\dagger b+\frac{\alpha}{2}b^{\dagger 2}b^2+f_ra^\dagger a+g(a^\dagger b+ab^\dagger).$$
 
@@ -797,7 +795,9 @@ not necessarily equal exactly $2g$, where $g$ is the coupling coefficient
 entered in the code.
 
 
-### Full numerical validation with scqubits
+---
+
+## Part 1C: Full Transmon–Resonator Model with scqubits
 
 The simplified Duffing calculation treats $f_q$, $\alpha$, and $g$ as effective parameters. Part 1C validates the avoided crossing using the full Transmon Hamiltonian provided by \`scqubits\`.
 
